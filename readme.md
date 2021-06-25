@@ -65,6 +65,8 @@
 
 经过上述的操作，构建好的操作系统固定的内存空间使用如图所示：
 
+（图片显示不全？点击链接查看：<a href="https://gitee.com/imcgr/image_blog/raw/master/20210625205523.png">操作系统内存构建图</a> ）
+
 ![操作系统内存图](https://gitee.com/imcgr/image_blog/raw/master/20210625205523.png)
 
 - 以上有颜色的部分即[0x0, 0x20 0000]内存都是不可分配的，都是操作系统固定使用的
