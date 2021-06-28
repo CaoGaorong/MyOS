@@ -164,9 +164,18 @@ $(BUILD_DIR)/switch.o: thread/switch.S
 $(BUILD_DIR)/syscall_wrap.o: userprog/syscall_wrap.S lib/user/syscall.c
 	$(AS) $(ASFLAGS) $< -o $@
 
-##############    链接所有目标文件    #############
+############ 链接mbr和loader  #################
+$(BUILD_DIR)/mbr.bin: boot/mbr.S
+	$(AS) -I boot/include/  $< -o $@
+
+$(BUILD_DIR)/loader.bin: boot/loader.S
+	$(AS) -I boot/include/  $< -o $@
+
+##############    链接所有目标文件成kernel.bin    #############
 $(BUILD_DIR)/kernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) $^ -o $@
+
+
 
 .PHONY : mk_dir hd clean all
 
@@ -174,13 +183,13 @@ mk_dir:
 	if [[ ! -d $(BUILD_DIR) ]];then mkdir $(BUILD_DIR);fi
 
 hd:
-	dd if=$(BUILD_DIR)/kernel.bin \
-           of=/home/jackson/Workspace/OS/hd60M.img \
-           bs=512 count=200 seek=9 conv=notrunc
+	dd if=$(BUILD_DIR)/mbr.bin  of=hd60M.img bs=512 count=1 conv=notrunc && \
+	dd if=$(BUILD_DIR)/loader.bin of=hd60M.img bs=512 count=4 seek=2 conv=notrunc && \
+	dd if=$(BUILD_DIR)/kernel.bin of=hd60M.img bs=512 count=200 seek=9 conv=notrunc
 
 clean:
 	cd $(BUILD_DIR) && rm -f ./*
 
-build: $(BUILD_DIR)/kernel.bin
+build: $(BUILD_DIR)/kernel.bin $(BUILD_DIR)/mbr.bin $(BUILD_DIR)/loader.bin
 
 all: mk_dir build hd

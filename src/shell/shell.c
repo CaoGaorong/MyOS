@@ -189,6 +189,11 @@ static void cmd_execute(uint32_t argc, char **argv)
             {
                 execv(argv[0], echo, argv);
             }
+            else
+            {
+                printf("my_shell: cannot access %s: No such file or directory\n", argv[0]);
+                exit(-1);
+            }
         }
     }
 }
